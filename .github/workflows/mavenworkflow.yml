@@ -1,0 +1,44 @@
+name: Build and Deploy Spring Boot App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: 21  # Use the desired Java version here
+
+      - name: Build Spring Boot app
+        run: |
+          ./mvnw clean package
+        working-directory: . # the dot is referring to the project root directory
+
+      - name: Run Tests
+        run: |
+          ./mvnw test
+        working-directory: . # the dot is referring to the project root directory
+
+      - name: Set up SSH connection
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DROPLET_IP }}
+          username: ${{ secrets.DROPLET_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy to DigitalOcean
+        if: success()
+        run: |
+          scp -r target/your-app.jar user@${{ secrets.DROPLET_IP }}:/path/to/deployment/folder/
+        env:
+          SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
+        continue-on-error: true
