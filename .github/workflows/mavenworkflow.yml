@@ -28,10 +28,8 @@ jobs:
 
 
       - name: Set up SSH connection
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.DROPLET_IP }}
-          key: ${{ secrets.SSH_PRIVATE_KEY_PATH }}
+        run: |
+          ssh -v -i ${{ secrets.SSH_PRIVATE_KEY_PATH }} -l ${{ secrets.DROPLET_USERNAME }} ${{ secrets.DROPLET_IP }}
 
 
       - name: Deploy to DigitalOcean
