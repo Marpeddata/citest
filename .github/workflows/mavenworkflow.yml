@@ -31,6 +31,7 @@ jobs:
         with:
           host: ${{ secrets.DROPLET_IP }}
           username: ${{ secrets.DROPLET_USERNAME }}
+          distribution: 'ubuntu'
 
 
       - name: Deploy to DigitalOcean
