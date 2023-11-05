@@ -9,9 +9,6 @@ class CihubdemoApplicationTests {
 	@Test
 	void contextLoads() {
 
-		int test = 1;
-
-		assert test == 1;
 
 	}
 
