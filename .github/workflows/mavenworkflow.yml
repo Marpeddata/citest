@@ -18,27 +18,23 @@ jobs:
         with:
           java-version: 21  # Use the desired Java version here
 
-      - name: Build Spring Boot app
-        run: |
-          ./mvnw clean package
+      - name: Build with Maven
+        run: mvn package
         working-directory: . # the dot is referring to the project root directory
 
       - name: Run Tests
-        run: |
-          ./mvnw test
-        working-directory: . # the dot is referring to the project root directory
+        run: mvn test
+        working-directory: src/test/java # the dot is referring to the project root directory
 
       - name: Set up SSH connection
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.DROPLET_IP }}
           username: ${{ secrets.DROPLET_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+
 
       - name: Deploy to DigitalOcean
         if: success()
         run: |
-          scp -r target/your-app.jar user@${{ secrets.DROPLET_IP }}:/path/to/deployment/folder/
-        env:
-          SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
+          scp -r target/cihubdemo.jar root@${{ secrets.DROPLET_IP }}:/root/mytestapp
         continue-on-error: true
